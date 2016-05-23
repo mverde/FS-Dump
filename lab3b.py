@@ -92,18 +92,13 @@ def main():
         directoryinode_to_links = {}
         for inode, numlink in inodes_to_links.items():
             if( numlink != 0):
-                #count num of inode instances in directory.csv
-
                 for i in curr_list:
                     if ( int(i[4]) == int(inode)):
                         count_links = count_links + 1
-                    # else:
-                    #     print "inode: ", inode, "i[4]: ", i[4]
                 if (count_links != numlink):
                     output.write("LINKCOUNT < {} > IS < {} > SHOULD BE < {} >".format(inode, numlink, count_links))
                     output.write("\n")
             count_links = 0
-                #print "this is not zero: ", inode, ". it has ", numlink, "links"
 
 
 
