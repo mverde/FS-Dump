@@ -54,6 +54,15 @@ def main():
     with open('directory.csv', 'rb') as direc:
         reader = csv.reader(direc)
         curr_list = list(reader)
+        for inode in curr_list:
+            for allocated_inode in allocated_inodes:
+                if(allocated_inode.inodenum == inode[4]):
+                    allocated_inode.refby[inode[4]] = inode[1]
+                    allocated_inode.parentinode = inode[0]
+
+
+
+
 
     with open('indirect.csv', 'rb') as indir:
         reader = csv.reader(indir)
