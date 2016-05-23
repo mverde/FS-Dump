@@ -18,15 +18,6 @@ class Block:
 def main():
     #Open files
 
-    inode_freelist = []
-    block_freelist = []
-    curr_list = []
-    total_inodes = 0
-    total_blocks = 0
-    block_size = 0
-    blocks_pgroup = 0
-    inodes_pgroup = 0
-
     with open('super.csv', 'rb') as sup:
         reader = csv.reader(sup)
         curr_list = list(reader)
@@ -42,17 +33,7 @@ def main():
 
     with open('bitmap.csv', 'rb') as bit:
         reader = csv.reader(bit)
-        curr_list = list(reader)
-        indicator = 0
-        curr_block = bitmapcsv[0][0]
-        for entry in curr_list:
-            if entry[0] != curr_block:
-                curr_block = entry[0]
-                indicator += 1
-            if indicator % 2 == 0:
-                block_freelist += entry
-            else:
-                inode_freelist += entry
+        bitmapcsv = list(reader)
 
     with open('inode.csv', 'rb') as inod:
         reader = csv.reader(inod)
@@ -60,6 +41,7 @@ def main():
         allocated_inodes = []
         for num in inodecsv:
             allocated_inodes.append(Inode(num[0], num[5], num[11:]))
+
 
     with open('directory.csv', 'rb') as direc:
         reader = csv.reader(direc)
