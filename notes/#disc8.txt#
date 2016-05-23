@@ -1,0 +1,26 @@
+CS111 Lab3b		5/20/16
+
+- Zhaoxing angry about Lab 3
+- sample output is the only correct source to figure out what you're supposed to
+  output; otherwise confusing
+- 3b should be easier than 3a b/c
+  - can choose any programming language (Python)
+  - took fewer hours for Zhaoxing to understand what to do
+
+Sample solution initializes two lists: inodeBitmapBlocks and block
+inodeFreeList	lists
+blockFreeList
+
+inodeAllocated	dict:<num, object>
+blockAllocated
+
+indirectTable	(block<num, entrynum, ptr>)
+directoryTable	(entryinode, parentinode)
+
+class Inode: inode number, parent inode, referenced by list:<dirinode, entrynum>
+      	     num_links, ptrs (list)
+
+class Block: block number, referenced by list<inodenum, indirectblocknum, entry>
+      	     	   	   (these variables for each element)
+
+# of hard links to directories should be: 2+numsubdirectories (. and ..)

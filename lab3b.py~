@@ -1,0 +1,41 @@
+import os,sys
+import csv
+
+def main():
+    #Open files
+
+    with open('super.csv', 'rb') as sup:
+        reader = csv.reader(sup)
+        mylist = list(reader)
+        print mylist[0][0]
+   
+    
+    with open('group.csv', 'rb') as sup:
+        reader = csv.reader(sup)
+        mylist = list(reader)
+        print mylist[0][0]
+
+    with open('bitmap.csv', 'rb') as sup:
+        reader = csv.reader(sup)
+        mylist = list(reader)
+        print mylist[0][0]
+
+    with open('inode.csv', 'rb') as sup:
+        reader = csv.reader(sup)
+        mylist = list(reader)
+        print mylist[0][0]
+
+    with open('directory.csv', 'rb') as sup:
+        reader = csv.reader(sup)
+        mylist = list(reader)
+        print mylist[0][0]
+
+    with open('indirect.csv', 'rb') as sup:
+        reader = csv.reader(sup)
+        mylist = list(reader)
+        print mylist[0][0]
+    
+    
+
+if __name__ == "__main__":
+        main()
