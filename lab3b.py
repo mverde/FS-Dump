@@ -33,6 +33,9 @@ def main():
     blocks_allocated = []
     allocated_inodes = []
 
+    inodes_to_links = {}
+
+    output = open('lab3b_check.txt', 'w+')
     with open('super.csv', 'rb') as sup:
         reader = csv.reader(sup)
         curr_list = list(reader)
@@ -67,10 +70,12 @@ def main():
         curr_list = list(reader)
         for num in curr_list:
             allocated_inodes.append(Inode(int(num[0]), int(num[5]), [int(x, 16) for x in num[11:]]))
+            inodes_to_links[int(num[0])] = int(num[5])
 
     with open('directory.csv', 'rb') as direc:
         reader = csv.reader(direc)
         curr_list = list(reader)
+        count_links = 0
         found = False
         for inode in curr_list:
             for allocated_inode in allocated_inodes:
@@ -84,6 +89,24 @@ def main():
                 unallocated.refby[int(inode[0])] = int(inode[1])
                 allocated_inodes.append(unallocated)
             found = False
+        directoryinode_to_links = {}
+        for inode, numlink in inodes_to_links.items():
+            if( numlink != 0):
+                #count num of inode instances in directory.csv
+
+                for i in curr_list:
+                    if ( int(i[4]) == int(inode)):
+                        count_links = count_links + 1
+                    # else:
+                    #     print "inode: ", inode, "i[4]: ", i[4]
+                if (count_links != numlink):
+                    output.write("LINKCOUNT < {} > IS < {} > SHOULD BE < {} >".format(inode, numlink, count_links))
+                    output.write("\n")
+            count_links = 0
+                #print "this is not zero: ", inode, ". it has ", numlink, "links"
+
+
+
                 
 
     with open('indirect.csv', 'rb') as indir:
@@ -91,8 +114,6 @@ def main():
         curr_list = list(reader)
 
     curr_list = []
-
-    output = open('lab3b_check.txt', 'w+')
 
     for inode in allocated_inodes:
         if inode.numlinks == -1:
