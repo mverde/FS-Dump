@@ -13,36 +13,22 @@ class Inode:
 class Block:
     def __init__(self, blocknum, refby):
         self.blocknum = blocknum
-        self.refby = {}
+        refby = {}
 
 def main():
     #Open files
 
-    curr_list = []
-    total_inodes = 0
-    total_blocks = 0
-    block_size = 0
-    blocks_pgroup = 0
-    inodes_pgroup = 0
-
-    blocks_allocated = []
-    
     with open('super.csv', 'rb') as sup:
         reader = csv.reader(sup)
-        curr_list = list(reader)
-        total_inodes = curr_list[0][1]
-        total_blocks = curr_list[0][2]
-        block_size = curr_list[0][3]
-        blocks_pgroup = curr_list[0][5]
-        inodes_pgroup = curr_list[0][6]
+        supercsv = list(reader)
     
     with open('group.csv', 'rb') as grup:
         reader = csv.reader(grup)
-        curr_list = list(reader)
+        groupcsv = list(reader)
 
     with open('bitmap.csv', 'rb') as bit:
         reader = csv.reader(bit)
-        curr_list = list(reader)
+        bitmapcsv = list(reader)
 
     with open('inode.csv', 'rb') as inod:
         reader = csv.reader(inod)
@@ -51,18 +37,21 @@ def main():
         for num in inodecsv:
             allocated_inodes.append(Inode(num[0], num[5], num[11:]))
 
+
     with open('directory.csv', 'rb') as direc:
         reader = csv.reader(direc)
-        curr_list = list(reader)
+        directorycsv = list(reader)
 
     with open('indirect.csv', 'rb') as indir:
         reader = csv.reader(indir)
-        curr_list = list(reader)
+        indirectcsv = list(reader)
 
-    curr_list = []
-
+<<<<<<< HEAD
     output = open('lab3b_check.txt', 'r+b')    
 
     
+=======
+        
+>>>>>>> 67a9b06f4a3e501476eb0e8b3ea972c7ccd0a16a
 if __name__ == "__main__":
         main()
