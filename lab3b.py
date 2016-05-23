@@ -14,6 +14,8 @@ class Inode:
 def main():
     #Open files
 
+    allocated_inodes = []
+
     with open('super.csv', 'rb') as sup:
         reader = csv.reader(sup)
         supercsv = list(reader)
@@ -29,14 +31,22 @@ def main():
     with open('inode.csv', 'rb') as inod:
         reader = csv.reader(inod)
         inodecsv = list(reader)
-        allocated_inodes = []
         for num in inodecsv:
             allocated_inodes.append(Inode(num[0], num[5], num[11:]))
-
 
     with open('directory.csv', 'rb') as direc:
         reader = csv.reader(direc)
         directorycsv = list(reader)
+        for inode in directorycsv:
+            for allocated_inode in allocated_inodes:
+                if(allocated_inode.inodenum == inode[4]):
+                    allocated_inode.refby[inode[4]] = inode[1]
+                    allocated_inode.parentinode = inode[0]
+                    print "dir inode: ", inode[4], "entry num: ", inode[1], "parent: ", inode[0]
+
+
+
+
 
     with open('indirect.csv', 'rb') as indir:
         reader = csv.reader(indir)
