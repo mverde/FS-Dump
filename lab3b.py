@@ -10,6 +10,10 @@ class Inode:
         self.numlinks = numlinks
         self.ptrlist = ptrlist
 
+class Block:
+    def __init__(self, blocknum, refby):
+        self.blocknum = blocknum
+        refby = {}
 
 def main():
     #Open files
@@ -52,7 +56,7 @@ def main():
 
     with open('inode.csv', 'rb') as inod:
         reader = csv.reader(inod)
-        inodecsv = list(reader)
+        curr_list = list(reader)
         allocated_inodes = []
         for num in inodecsv:
             allocated_inodes.append(Inode(num[0], num[5], num[11:]))
@@ -68,6 +72,7 @@ def main():
     curr_list = []
 
     output = open('lab3b_check.txt', 'r+b')    
-        
+
+    
 if __name__ == "__main__":
         main()
