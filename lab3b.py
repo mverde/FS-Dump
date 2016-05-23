@@ -89,7 +89,6 @@ def main():
                 unallocated.refby[int(inode[0])] = int(inode[1])
                 allocated_inodes.append(unallocated)
             found = False
-        directoryinode_to_links = {}
         for inode, numlink in inodes_to_links.items():
             if( numlink != 0):
                 for i in curr_list:
@@ -100,7 +99,16 @@ def main():
                     output.write("\n")
             count_links = 0
 
-
+        inodes_to_parents = {}
+        count = 0
+        for row in curr_list:
+            count = count + 1
+            if(row[5] == ".."):
+                print "dotdot"
+            elif (row[5] == "."):
+                if(row[4] != row[0]):
+                    output.write("INCORRECT ENTRY IN < {} > NAME <  {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], row[0]))
+                    output.write("\n")
 
                 
 
