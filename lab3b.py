@@ -10,6 +10,10 @@ class Inode:
         self.numlinks = numlinks
         self.ptrlist = ptrlist
 
+class Block:
+    def __init__(self, blocknum, refby):
+        self.blocknum = blocknum
+        refby = {}
 
 def main():
     #Open files
@@ -18,11 +22,16 @@ def main():
 
     with open('super.csv', 'rb') as sup:
         reader = csv.reader(sup)
-        supercsv = list(reader)
+        curr_list = list(reader)
+        total_inodes = curr_list[0][1]
+        total_blocks = curr_list[0][2]
+        block_size = curr_list[0][3]
+        blocks_pgroup = curr_list[0][5]
+        inodes_pgroup = curr_list[0][6]
     
     with open('group.csv', 'rb') as grup:
         reader = csv.reader(grup)
-        groupcsv = list(reader)
+        curr_list = list(reader)
 
     with open('bitmap.csv', 'rb') as bit:
         reader = csv.reader(bit)
@@ -30,7 +39,8 @@ def main():
 
     with open('inode.csv', 'rb') as inod:
         reader = csv.reader(inod)
-        inodecsv = list(reader)
+        curr_list = list(reader)
+        allocated_inodes = []
         for num in inodecsv:
             allocated_inodes.append(Inode(num[0], num[5], num[11:]))
 
@@ -50,8 +60,12 @@ def main():
 
     with open('indirect.csv', 'rb') as indir:
         reader = csv.reader(indir)
-        indirectcsv = list(reader)
+        curr_list = list(reader)
 
-        
+    curr_list = []
+
+    output = open('lab3b_check.txt', 'r+b')    
+
+    
 if __name__ == "__main__":
         main()
