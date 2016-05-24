@@ -142,6 +142,59 @@ def main():
                     output.write("\n")
             count_links = 0
 
+
+<<<<<<< HEAD
+=======
+        medium_list = []
+
+        for i in curr_list:
+            if (i[5] != '.' and i[5] != '..'):
+                medium_list.append( (i[0], i[4]) )
+
+        parents_to_children={} #dictionary of parent inodes to a list of their children
+        for key, val in medium_list:
+            parents_to_children.setdefault(key, []).append(val)
+
+        child_in_list = False
+        corrent_parent = 0
+        for row in curr_list:
+            if(row[5] == ".."):
+                #check to see that this inode is in the list of of inodes for their given parent
+                #parent r[0], current inode row[4]
+                #look for parent of parent
+                #make sure row[0] is in list of parents_to_children[ [row[4] ]
+                if(row[4] in parents_to_children):
+                    for val in parents_to_children[ row[4] ]:
+                        if (row[0] == val):
+                            child_in_list = True
+                        elif (row[4] == '2' and row[0] == '2'):
+                            child_in_list = True
+                    if(child_in_list == False):
+                        #find correct val
+                        correct_val = ''
+                        for key in parents_to_children:
+                            for val in parents_to_children[key]:
+                                if ( val == row[0]):
+                                    correct_val = key
+                        output.write("INCORRECT ENTRY IN < {} > NAME <  {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], correct_val))
+                        output.write("\n")
+                    child_in_list = False
+                else:
+                    correct_val = ''
+                    for key in parents_to_children:
+                        for val in parents_to_children[key]:
+                            if ( val == row[0] ):
+                                correct_val = key
+                    output.write("INCORRECT ENTRY IN < {} > NAME <  {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], correct_val))
+                    output.write("\n")
+            elif (row[5] == "."):
+                if(row[4] != row[0]):
+                    output.write("INCORRECT ENTRY IN < {} > NAME <  {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], row[0]))
+                    output.write("\n")
+
+                
+
+>>>>>>> d7ccae6c08894341d35dd787ed58b19c663bc143
     with open('indirect.csv', 'rb') as indir:
         reader = csv.reader(indir)
         curr_list = list(reader)
