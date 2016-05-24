@@ -26,6 +26,17 @@ def traverse_block_tree(output_file, block_dict, inodenum, entrynum, current_nod
     else:
         blocknum = current_node.blocknum
         children = current_node.children
+
+    if blocknum != -1 and indirect_blocknum:
+        for block in children:
+            if block[1].blocknum not in block_dict:
+                block_dict[block[1].blocknum] = Block()
+            block_dict[block[1].blocknum].refby.append((inodenum, indirect_blocknum, entrynum))
+    elif blocknum != -1:
+        if blocknum not in block_dict:
+            block_dict[blocknum] = Block()
+        block_dict[blocknum].refby.append((inodenum, indirect_blocknum, entrynum))
+        
     
     if blocknum == 0 or blocknum > blocks_pgroup * groups:
         output_file.write('INVALID BLOCK < {} > IN INODE < {} > '.format(current_node.blocknum, inodenum))
@@ -34,6 +45,31 @@ def traverse_block_tree(output_file, block_dict, inodenum, entrynum, current_nod
         output_file.write('ENTRY < {} >\n'.format(current_node.blocknum, inodenum, entrynum))
     for inode in children:
         traverse_block_tree(output_file, block_dict, inodenum, entrynum, inode, blocknum)
+
+def print_block_errors(output_file, block_dict, block_freelist):
+    for blocknum in block_dict:
+        block = block_dict[blocknum]
+        block.refby = sorted(block.refby, key = lambda x: x[0])
+        for entry in block_freelist:
+            if entry[1] == blocknum:
+                output_file.write('UNALLOCATED BLOCK < {} > REFERENCED BY'.format(blocknum))
+                for ref in block.refby:
+                    output_file.write(' INODE < {} > '.format(ref[0]))
+                    if ref[1]:
+                        output_file.write('INDIRECT BLOCK < {} > '.format(ref[1]))
+                    output_file.write('ENTRY < {} >'.format(ref[2]))
+                output_file.write('\n')
+
+        if len(block.refby) > 1:
+            output_file.write('MULTIPLY REFERENCED BLOCK < {} > BY'.format(blocknum))
+            for ref in block.refby:
+                output_file.write(' INODE < {} > '.format(ref[0]))
+                if ref[1]:
+                    output_file.write('INDIRECT BLOCK < {} > '.format(ref[1]))
+                output_file.write('ENTRY < {} >'.format(ref[2]))
+                
+            output_file.write('\n')
+                
 
 class Inode:
     def __init__(self, inodenum, numlinks, block_tree):
@@ -44,8 +80,7 @@ class Inode:
         self.block_tree = block_tree
 
 class Block:
-    def __init__(self, blocknum, refby):
-        self.blocknum = blocknum
+    def __init__(self):
         self.refby = []
 
 def main():
@@ -142,9 +177,6 @@ def main():
                     output.write("\n")
             count_links = 0
 
-
-<<<<<<< HEAD
-=======
         medium_list = []
 
         for i in curr_list:
@@ -156,7 +188,6 @@ def main():
             parents_to_children.setdefault(key, []).append(val)
 
         child_in_list = False
-        corrent_parent = 0
         for row in curr_list:
             if(row[5] == ".."):
                 #check to see that this inode is in the list of of inodes for their given parent
@@ -176,7 +207,7 @@ def main():
                             for val in parents_to_children[key]:
                                 if ( val == row[0]):
                                     correct_val = key
-                        output.write("INCORRECT ENTRY IN < {} > NAME <  {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], correct_val))
+                        output.write("INCORRECT ENTRY IN < {} > NAME < {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], correct_val))
                         output.write("\n")
                     child_in_list = False
                 else:
@@ -185,16 +216,14 @@ def main():
                         for val in parents_to_children[key]:
                             if ( val == row[0] ):
                                 correct_val = key
-                    output.write("INCORRECT ENTRY IN < {} > NAME <  {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], correct_val))
+                    output.write("INCORRECT ENTRY IN < {} > NAME < {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], correct_val))
                     output.write("\n")
             elif (row[5] == "."):
                 if(row[4] != row[0]):
-                    output.write("INCORRECT ENTRY IN < {} > NAME <  {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], row[0]))
+                    output.write("INCORRECT ENTRY IN < {} > NAME < {} > LINK TO < {} > SHOULD BE < {} >".format(row[0], row[5], row[4], row[0]))
                     output.write("\n")
 
-                
-
->>>>>>> d7ccae6c08894341d35dd787ed58b19c663bc143
+                    
     with open('indirect.csv', 'rb') as indir:
         reader = csv.reader(indir)
         curr_list = list(reader)
@@ -250,6 +279,8 @@ def main():
             for index, block_node in enumerate(inode.block_tree):
                 traverse_block_tree(output, allocated_blocks, inode.inodenum, index, block_node)
 
+    print_block_errors(output, allocated_blocks, block_freelist)
+    
     output.close()
 
 if __name__ == "__main__":
